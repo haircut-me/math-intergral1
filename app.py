@@ -9,8 +9,8 @@ import io
 import streamlit.components.v1 as components
 
 SAVE_FILE = "math_integral1_data.json"
-FIXED_PDF_NAME = "calculus1.pdf"  # 요청하신 교재 파일명으로 변경
-ANSWER_PDF_NAME = "calculus1_answer.pdf"  # 요청하신 답안지 파일명으로 변경
+FIXED_PDF_NAME = "calculus1.pdf"  
+ANSWER_PDF_NAME = "calculus1_answer.pdf"  
 
 def save_to_local():
     data = {
@@ -39,7 +39,7 @@ def load_from_local():
             pass
 
 # 1. 페이지 초기화
-st.set_page_config(page_title="Math-integral1 무한 랜덤 문제 은행", layout="wide")
+st.set_page_config(page_title="미적분1 무한 랜덤 문제 은행", layout="wide")
 
 is_pdf_broken = False
 total_pages_count = 0
@@ -134,8 +134,8 @@ def get_cropped_image_bytes(pdf_path, page_idx, zoom=2.0):
     img.save(buf, format="PNG")
     return buf.getvalue()
 
-# 4. 사이드바 구성
-st.sidebar.title("🎮 Math-integral1 문제 은행")
+# 4. 사이드바 구성 (요청하신 대로 한글 명칭으로 수정 완료)
+st.sidebar.title("🎮 미적분1 문제은행")
 st.sidebar.markdown(f"### 🔥 연속 학습일: `{st.session_state.streak}일째`")
 st.sidebar.markdown(f"### 🎯 오늘 푼 문항수: `{st.session_state.solved_count}개`")
 st.sidebar.markdown(f"### 🚨 누적 오답수: `{len(st.session_state.wrong_notes)}개`")
