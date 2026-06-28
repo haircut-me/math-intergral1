@@ -8,9 +8,9 @@ from PIL import Image
 import io
 import streamlit.components.v1 as components
 
-SAVE_FILE = "math_pilot_solo_data.json"
-FIXED_PDF_NAME = "sumaessing.pdf"
-ANSWER_PDF_NAME = "answer.pdf"
+SAVE_FILE = "math_integral1_data.json"
+FIXED_PDF_NAME = "calculus1.pdf"  # 요청하신 교재 파일명으로 변경
+ANSWER_PDF_NAME = "calculus1_answer.pdf"  # 요청하신 답안지 파일명으로 변경
 
 def save_to_local():
     data = {
@@ -39,7 +39,7 @@ def load_from_local():
             pass
 
 # 1. 페이지 초기화
-st.set_page_config(page_title="수매씽 무한 랜덤 문제 은행", layout="wide")
+st.set_page_config(page_title="Math-integral1 무한 랜덤 문제 은행", layout="wide")
 
 is_pdf_broken = False
 total_pages_count = 0
@@ -135,7 +135,7 @@ def get_cropped_image_bytes(pdf_path, page_idx, zoom=2.0):
     return buf.getvalue()
 
 # 4. 사이드바 구성
-st.sidebar.title("🎮 수매씽 1:1 매칭 문제 은행")
+st.sidebar.title("🎮 Math-integral1 문제 은행")
 st.sidebar.markdown(f"### 🔥 연속 학습일: `{st.session_state.streak}일째`")
 st.sidebar.markdown(f"### 🎯 오늘 푼 문항수: `{st.session_state.solved_count}개`")
 st.sidebar.markdown(f"### 🚨 누적 오답수: `{len(st.session_state.wrong_notes)}개`")
@@ -146,9 +146,9 @@ menu = st.sidebar.radio("메뉴 이동", menu_options)
 if menu == "📁 시스템 연결 상태":
     st.header("📁 교재 및 해설지 파일 상태")
     if is_pdf_broken:
-        st.error(f"❌ 깃허브 저장소에 {FIXED_PDF_NAME} 파일이 누락되었거나 손상되었습니다.")
+        st.error(f"❌ 깃허브 저장소에 {FIXED_PDF_NAME} 파일이 없거나 이름이 다릅니다. 미적분1 PDF 파일을 업로드하고 이름을 {FIXED_PDF_NAME}(으)로 변경해 주세요.")
     else:
-        st.success(f"✅ 편집본 문제집 연결 성공! (총 {total_pages_count}개 문항 탑재)")
+        st.success(f"✅ 미적분1 문제집 연결 성공! (총 {total_pages_count}개 문항 탑재)")
         
     if has_answer_pdf:
         st.success(f"✅ 1:1 매칭 해설지({ANSWER_PDF_NAME}) 연결 성공!")
@@ -160,7 +160,7 @@ elif menu in ["📝 1:1 랜덤 시험장", "🔥 오답노트 랜덤 시험장"]
     st.header(menu)
     
     if is_pdf_broken:
-        st.error("📁 PDF 교재 상태를 사이드바 메뉴에서 확인해 주세요.")
+        st.error(f"📁 PDF 교재 상태를 사이드바 메뉴에서 확인해 주세요. 깃허브에 {FIXED_PDF_NAME} 파일이 필요합니다.")
     elif is_wrong_mode and not st.session_state.wrong_notes:
         st.success("🎉 현재 오답노트에 등록된 문제가 없습니다! 전체 시험장에서 문제를 먼저 풀어보세요.")
     else:
@@ -194,7 +194,6 @@ elif menu in ["📝 1:1 랜덤 시험장", "🔥 오답노트 랜덤 시험장"]
         with t_col2:
             init_running = "false" if st.session_state.show_answer_trigger else "true"
             
-            # 따옴표 에러 해결된 자바스크립트 타이머 구조
             stopwatch_html = """
             <div id="sw-box" style="background-color: #FFF3CD; padding: 12px; border-radius: 10px; border: 1px solid #FFEBAA; font-family: sans-serif; text-align: center; box-sizing: border-box;">
                 <span style="color: #856404; font-weight: bold; font-size: 14px;">⏱️ 문제 풀이 시간</span>
@@ -213,6 +212,13 @@ elif menu in ["📝 1:1 랜덤 시험장", "🔥 오답노트 랜덤 시험장"]
                     let isRunning = __INIT_RUNNING__;
                     const display = document.getElementById('stopwatch-display');
                     const btnToggle = document.getElementById('btn-toggle');
+                    
+                    function updateDisplay(sec) {
+                        const m = Math.floor(sec / 60);
+                        const s = sec % 60;
+                        display.textContent = m + "분 " + (s < 10 ? "0" + s : s) + "초";
+                    }
+                    
                     if (!isRunning) {
                         btnToggle.textContent = "▶️ 다시 시작";
                         btnToggle.style.backgroundColor = "#28A745";
@@ -340,7 +346,7 @@ elif menu in ["📝 1:1 랜덤 시험장", "🔥 오답노트 랜덤 시험장"]
         with c1:
             if st.button("🔍 정답 제출하고 해설지 즉시 보기", use_container_width=True):
                 if not has_answer_pdf:
-                    st.error("⚠️ 1:1 매칭된 answer.pdf 파일이 깃허브에 필요합니다.")
+                    st.error(f"⚠️ 1:1 매칭된 {ANSWER_PDF_NAME} 파일이 깃허브에 필요합니다.")
                 else:
                     st.session_state.show_answer_trigger = True
                     st.rerun()
